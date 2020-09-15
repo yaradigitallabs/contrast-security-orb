@@ -10,28 +10,28 @@ parameters:
       Absolute path to an installed Python shell
 
   severities:
-    type: string
-    default: CRITICAL,HIGH,MEDIUM,LOW,NOTE
+    type: env_var_name
+    default: CONTRAST_SEVERITIES
     description: >
-      A comma-delimited list of serverities to use when filtering for vulnerabilities.
+      Name of an environment variable containing a comma-delimited list of serverities to use when filtering for vulnerabilities.
 
   application-id:
-    type: string
-    default: ""
+    type: env_var_name
+    default: CONTRAST_APPLICATION_ID
     description: >
-      ID of your application in Contrast
+      Name of an environment variable containing the ID of your application in Contrast. This is the last component of the URI of your application's page in the contrast UI
 
   username:
     type: env_var_name
     default: CONTRAST_USERNAME
     description: >
-      Name of environment variable storing your Contrast username
+      Name of an environment variable storing your Contrast username
 
   service-key:
     type: env_var_name
     default: CONTRAST_SERVICE_KEY
     description: >
-      Name of environment variable storing your Contrast service key
+      Name of an environment variable storing your Contrast service key
 
   contrast-url:
     type: string
@@ -40,10 +40,10 @@ parameters:
       The Contrast url for your instance. The default is https://app.contrastsecurity.com/Contrast
 
   org-id:
-    type: string
-    default: ""
+    type: env_var_name
+    default: CONTRAST_ORG_ID
     description: >
-      The organization id for your Contrast organization. This can be found on the "Your Account" page in the Contrast UI.
+      Name of an environment variable storing the organization id for your Contrast organization. This can be found on the "Your Account" page in the Contrast UI.
 
   api-key:
     type: env_var_name
@@ -52,8 +52,8 @@ parameters:
       Name of environment variable storing your Contrast API key
 
   vulnerability-threshold:
-    type: integer
-    default: 0
+    type: env_var_name
+    default: CONTRAST_VULNERABILITY_THRESHOLD
     description: >
       For what number or greater of open vulnerabilities would you like
       your build to fail?
@@ -78,6 +78,7 @@ steps:
       name: Check Contrast for vulnerabilities
       shell: <<parameters.python-path>>
       command: |
+        #!/usr/local/bin/python
         import base64
         import datetime
         import json
@@ -86,25 +87,23 @@ steps:
         import sys
         import os
 
-        # Set the severities you are interested in
-        SEVERITIES = os.path.expandvars("${<<parameters.severities>>}")
-
         headers = {
-         'Accept': 'application/json',
-         'API-Key': os.path.expandvars("${<<parameters.api-key>>}"),
-         'Authorization': base64.b64encode(os.path.expandvars("${<<parameters.username>>}:${<<parameters.service-key>>}"))
+        'Accept': 'application/json',
+        'API-Key': os.path.expandvars("${CONTRAST_API_KEY}"),
+        'Authorization': base64.b64encode(os.path.expandvars("${CONTRAST_USERNAME}:${CONTRAST_SERVICE_KEY}"))
         }
 
+        print(headers)
         # Contrast Security API request to get vulnerabilities
-        url = "<<parameters.contrast-url>>/api/ng/<<parameters.org-id>>/traces/<<parameters.application-id>>/quick?severities=<<parameters.severities>>"
+        url = os.path.expandvars("https://app.contrastsecurity.com/Contrast/api/ng/${CONTRAST_ORG_ID}/traces/${CONTRAST_APPLICATION_ID}/quick?severities=${CONTRAST_SEVERITIES}")
 
         print ('HTTP GET ' + url)
         response = requests.get(url, headers = headers)
 
         # Check the status of the request
         if (not response.ok):
-         print ('We could not contact Contrast. Please make sure contrast-url, application-id, org-id, and all credentials are correct')
-         sys.exit(1)
+          print ('We could not contact Contrast. Please make sure contrast-url, application-id, org-id, and all credentials are correct')
+          sys.exit(1)
 
         # Parse the JSON content
         json_data = json.loads(response.content)
@@ -113,16 +112,16 @@ steps:
         vulns_open = 0
 
         for filter in json_data['filters']:
-         if (filter['name'] == 'All'):
-          vulns_all = filter['count']
-         elif (filter['name'] == 'Open'):
-          vulns_open = filter['count']
+          if (filter['name'] == 'All'):
+            vulns_all = filter['count']
+          elif (filter['name'] == 'Open'):
+            vulns_open = filter['count']
 
         print ('All vulnerabilities: ' + str(vulns_all))
         print ('Open vulnerabilities: ' + str(vulns_open))
 
         # TODO Set the threshold for the number of vulnerabilities (of given severities)
-        if (vulns_open > <<parameters.vulnerability-threshold>>):
-         print("Above the vulnerabilities threshold. Failing build.")
-         sys.exit(1)
+        if (vulns_open > int(os.path.expandvars("$CONTRAST_VULNERABILITY_THRESHOLD"))):
+          print("Above the vulnerabilities threshold. Failing build.")
+          sys.exit(1)
 
