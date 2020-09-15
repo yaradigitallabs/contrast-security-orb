@@ -18,28 +18,28 @@ parameters:
       Absolute path to an installed Python shell
 
   severities:
-    type: string
-    default: CRITICAL,HIGH,MEDIUM,LOW,NOTE
+    type: env_var_name
+    default: CONTRAST_SEVERITIES
     description: >
-      A comma-delimited list of serverities to use when filtering for vulnerabilities.
+      Name of an environment variable containing a comma-delimited list of serverities to use when filtering for vulnerabilities.
 
   application-id:
-    type: string
-    default: ""
+    type: env_var_name
+    default: CONTRAST_APPLICATION_ID
     description: >
-      ID of your application in Contrast
+      Name of an environment variable containing the ID of your application in Contrast. This is the last component of the URI of your application's page in the contrast UI
 
   username:
     type: env_var_name
     default: CONTRAST_USERNAME
     description: >
-      Name of environment variable storing your Contrast username
+      Name of an environment variable storing your Contrast username
 
   service-key:
     type: env_var_name
     default: CONTRAST_SERVICE_KEY
     description: >
-      Name of environment variable storing your Contrast service key
+      Name of an environment variable storing your Contrast service key
 
   contrast-url:
     type: string
@@ -48,10 +48,10 @@ parameters:
       The Contrast url for your instance. The default is https://app.contrastsecurity.com/Contrast
 
   org-id:
-    type: string
-    default: ""
+    type: env_var_name
+    default: CONTRAST_ORG_ID
     description: >
-      The organization id for your Contrast organization. This can be found on the "Your Account" page in the Contrast UI.
+      Name of an environment variable storing the organization id for your Contrast organization. This can be found on the "Your Account" page in the Contrast UI.
 
   api-key:
     type: env_var_name
