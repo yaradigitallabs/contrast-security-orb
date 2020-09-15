@@ -6,7 +6,7 @@ usage:
   version: 2.1
 
   orbs:
-    contrastsecurity: contrastsecurity/verify@x.y.z
+    contrast_verify: yaradigitallabs/contrast-verify@x.y.z
 
   jobs:
     contrast-verify:
@@ -14,13 +14,25 @@ usage:
       steps:
         - checkout
 
-        - contrastsecurity/check-vulnerabilities:
-            severities: CRITICAL,HIGH,MEDIUM
-            org-id: (your org id)
-            application-id: (your application id)
-            contrast-url: https://app.contrastsecurity.com/Contrast
+        - contrast_verify/check-vulnerabilities:
+          contrast-url: "https://app.contrastsecurity.com/Contrast"
+          username: CONTRAST_USERNAME
+          service-key: CONTRAST_SERVICE_KEY
+          org-id: CONTRAST_ORG_ID
+          severities: CONTRAST_SEVERITIES
+          api-key: CONTRAST_API_KEY
+          vulnerability-threshold: CONTRAST_VULNERABILITY_THRESHOLD
+          application-id: CONTRAST_APPLICATION_ID
 
   workflows:
     test:
       jobs:
-        - contrast-verify
+        - contrast-verify:
+            environment:
+              CONTRAST_USERNAME: foo
+              CONTRAST_API_KEY: bar
+              CONTRAST_SERVICE_KEY: baz
+              CONTRAST_APPLICATION_ID: foo
+              CONTRAST_ORG_ID: bar
+              CONTRAST_SEVERITIES: LOW,MED
+              CONTRAST_VULNERABILITY_THRESHOLD: 1
