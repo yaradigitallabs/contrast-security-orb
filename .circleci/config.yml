@@ -15,9 +15,13 @@ workflows:
           orb-ref: yaradigitallabs/contrast-verify@dev:${CIRCLE_BRANCH}
           publish-token-variable: "$CIRCLECI_DEV_API_TOKEN"
           validate: true
+          requires:
+            - orb-tools/pack
       - orb-tools/increment:
           attach-workspace: true
           orb-path: ./orb.yml
           orb-ref: yaradigitallabs/contrast-verify
           publish-token-variable: "$CIRCLECI_DEV_API_TOKEN"
           segment: patch
+          requires:
+            - orb-tools/publish
