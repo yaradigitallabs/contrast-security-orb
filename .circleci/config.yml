@@ -7,11 +7,11 @@ workflows:
     jobs:
       - orb-tools/pack:
           source-dir: src/
-          destination-orb-path: ./orb/orb.yml
-          workspace-path: ./orb
+          destination-orb-path: ./packed-orb/orb.yml
+          workspace-path: ./packed-orb
       - orb-tools/publish:
           attach-workspace: true
-          orb-path: .orb/orb.yml
+          orb-path: ./packed-orb/orb.yml
           orb-ref: yaradigitallabs/contrast-verify@dev:${CIRCLE_BRANCH}
           publish-token-variable: "$CIRCLECI_DEV_API_TOKEN"
           validate: true
@@ -19,7 +19,7 @@ workflows:
             - orb-tools/pack
       - orb-tools/increment:
           attach-workspace: true
-          orb-path: .orb//orb.yml
+          orb-path: ./packed-orb/orb.yml
           orb-ref: yaradigitallabs/contrast-verify
           publish-token-variable: "$CIRCLECI_DEV_API_TOKEN"
           segment: patch
