@@ -15,14 +15,14 @@ usage:
         - checkout
 
         - contrast_verify/check-vulnerabilities:
-          contrast-url: "https://app.contrastsecurity.com/Contrast"
-          username: CONTRAST_USERNAME
-          service-key: CONTRAST_SERVICE_KEY
-          org-id: CONTRAST_ORG_ID
-          severities: CONTRAST_SEVERITIES
-          api-key: CONTRAST_API_KEY
-          vulnerability-threshold: CONTRAST_VULNERABILITY_THRESHOLD
-          application-id: CONTRAST_APPLICATION_ID
+            contrast-url: "https://app.contrastsecurity.com/Contrast"
+            username: CONTRAST_USERNAME
+            service-key: CONTRAST_SERVICE_KEY
+            org-id: CONTRAST_ORG_ID
+            severities: CONTRAST_SEVERITIES
+            api-key: CONTRAST_API_KEY
+            vulnerability-threshold: CONTRAST_VULNERABILITY_THRESHOLD
+            application-id: CONTRAST_APPLICATION_ID
 
   workflows:
     test:
