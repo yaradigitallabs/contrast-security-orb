@@ -60,8 +60,8 @@ parameters:
       Name of environment variable storing your Contrast API key
 
   vulnerability-threshold:
-    type: integer
-    default: 0
+    type: env_var_name
+    default: CONTRAST_VULNERABILITY_THRESHOLD
     description: >
       For what number or greater of open vulnerabilities would you like
       your build to fail?
