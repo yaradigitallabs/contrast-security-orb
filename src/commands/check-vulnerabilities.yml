@@ -93,7 +93,6 @@ steps:
         'Authorization': base64.b64encode(os.path.expandvars("${CONTRAST_USERNAME}:${CONTRAST_SERVICE_KEY}"))
         }
 
-        print(headers)
         # Contrast Security API request to get vulnerabilities
         url = os.path.expandvars("https://app.contrastsecurity.com/Contrast/api/ng/${CONTRAST_ORG_ID}/traces/${CONTRAST_APPLICATION_ID}/quick?severities=${CONTRAST_SEVERITIES}")
 
